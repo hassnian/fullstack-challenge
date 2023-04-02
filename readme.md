@@ -4,6 +4,9 @@
 ## Getting Started
 
 
+
+#### I had some issues with setting up docker on my M1 mac, i dont have another pc to test other enviorments. I have tested the application on a windows machine and it works fine. I have also tested the application on a linux machine and it works fine. I have not tested the application on a mac with intel chip. 
+
 ### Prerequisites
 
 You will need to have docker installed on your machine.
