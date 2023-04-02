@@ -1,0 +1,251 @@
+version: '3.7'
+
+#
+#  networks:
+#    - esnet
+#    - frontend
+#    - backend
+#
+
+networks:
+  laravel:
+  app-network:
+
+volumes:
+  esdata:
+    driver: local
+
+services:
+#  client:
+#    build:
+#      context: ./client
+#    volumes:
+#      - ./client:/app
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - app-network
+
+  nginx:
+    build:
+      context: ./docker
+      dockerfile: nginx.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    restart: unless-stopped
+    container_name: nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    depends_on:
+      - php
+      - mysql
+      - laravel-queue
+      - laravel-cron
+      - phpmyadmin
+    networks:
+      - laravel
+
+  php:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: php
+    ports:
+      - ":9000"
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    networks:
+      - laravel
+
+  mysql:
+    image: mariadb:10.6
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    networks:
+      - laravel
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    networks:
+      - laravel
+
+  laravel-cron:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: laravel-cron
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'schedule:work']
+    networks:
+      - laravel
+
+  laravel-queue:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: laravel-queue
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: ${DB_HOST}
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      PMA_PORT: ${DB_PORT}
+    depends_on:
+      - mysql
+    ports:
+      - "8888:80"
+    networks:
+      - laravel
+
+  composer:
+    build:
+      context: ./docker
+      dockerfile: composer.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: composer
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    user: ${USER:-laravel} #system user
+    profiles: ["composer"]
+    entrypoint: ['composer', '--ignore-platform-reqs']
+    networks:
+      - laravel
+
+  artisan:
+    build:
+      context: ./docker
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USER=${USER:-laravel}
+    container_name: artisan
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    depends_on:
+      - mysql
+      - elasticsearch
+    working_dir: /var/www/html
+    profiles: ["artisan"]
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - laravel
+
+  npm:
+    image: node:alpine
+    container_name: npm
+    volumes:
+      - ./server:/var/www/html
+      - ./server/.env:/var/www/html/.env
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    working_dir: /var/www/html
+    profiles: ["npm"]
+    entrypoint: ['npm']
+    networks:
+      - laravel
+
+
+#  ElasticSearch:
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2"
+    platform: linux/arm64/v8
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      node.name: elasticsearch
+      discovery.seed_hosts: elasticsearch
+      cluster.initial_master_nodes: elasticsearch
+      cluster.name: mycluster
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+    volumes:
+      - "esdata:/usr/share/elasticsearch/data"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://localhost:9200"]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      - laravel
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:7.10.2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - "5601:5601"
+    environment:
+      - 'ELASTICSEARCH_HOSTS=["http://elasticsearch:9200"]'
+    networks:
+      - laravel
+    links:
+      - elasticsearch
