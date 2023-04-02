@@ -15,6 +15,7 @@ services:
     volumes:
       - ./client:/app
       - ./client/.env:/app/.env
+      - /app/node_modules
     ports:
       - "3000:3000"
     networks:
@@ -40,7 +41,6 @@ services:
       - mysql
       - laravel-queue
       - laravel-cron
-      - phpmyadmin
     networks:
       - laravel
 
@@ -60,6 +60,7 @@ services:
       - ./server/.env:/var/www/html/.env
     networks:
       - laravel
+      - app-network
 
   mysql:
     image: mariadb:10.6
@@ -124,22 +125,6 @@ services:
       - mysql
     working_dir: /var/www/html
     entrypoint: ['php', '/var/www/html/artisan', 'queue:work']
-    networks:
-      - laravel
-
-  phpmyadmin:
-    image: phpmyadmin:5.2.0
-    container_name: phpmyadmin
-    environment:
-      PMA_ARBITRARY: 1
-      PMA_HOST: ${DB_HOST}
-      PMA_USER: ${DB_USERNAME}
-      PMA_PASSWORD: ${DB_PASSWORD}
-      PMA_PORT: ${DB_PORT}
-    depends_on:
-      - mysql
-    ports:
-      - "8888:80"
     networks:
       - laravel
 
