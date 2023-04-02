@@ -31,7 +31,6 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
         $datasources = $articleSearchQueryOptions->datasources ?? [];
         $categories = $articleSearchQueryOptions->categories ?? [];
         $authors = $articleSearchQueryOptions->authors ?? [];
-        $allFiltersRequired = $articleSearchQueryOptions->allFiltersRequired ?? false;
         $pageSize = $articleSearchQueryOptions->pageSize ?? 10;
         $page = $articleSearchQueryOptions->page ?? 1;
 
@@ -83,8 +82,6 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
                 )
             ));
         }
-
-        $boleanBool = $allFiltersRequired ? 'must' : 'should';
 
         $body->put('query', ElastisearchQueryBuilderHelper::getBoolQuery('should', $mustOrShouldQuery->toArray()));
 

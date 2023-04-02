@@ -5,8 +5,8 @@ import Spinner from "../common/Spinner";
 const AuthForm = (props) => {
     const [form, setForm] = useState({
         name: '',
-        email: 'hassnian@gmail.com',
-        password: 'password'
+        email: '',
+        password: ''
     })
 
     const isSignUp = props.isSignUp
@@ -53,7 +53,7 @@ const AuthForm = (props) => {
                         onChange={handleChange}
                     />
 
-                    {props.errors.name && <p className="text-red-500 mt-1">{props.errors.name}</p>}
+                    {props.errors.name && <p className="mt-1 text-red-500">{props.errors.name}</p>}
                 </div>
             )}
 
@@ -72,7 +72,7 @@ const AuthForm = (props) => {
                     onChange={handleChange}
                 />
 
-                {props.errors.email && <p className="text-red-500 mt-1">{props.errors.email}</p>}
+                {props.errors.email && <p className="mt-1 text-red-500">{props.errors.email}</p>}
             </div>
 
             <div>
@@ -90,13 +90,13 @@ const AuthForm = (props) => {
                     onChange={handleChange}
                 />
 
-                {props.errors.password && <p className="text-red-500 mt-1">{props.errors.password}</p>}
+                {props.errors.password && <p className="mt-1 text-red-500">{props.errors.password}</p>}
             </div>
 
             <div>
                 <button
                     type="submit"
-                    className="group relative flex w-full justify-center bg-black py-3 px-3 text-sm font-semibold text-white hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="relative flex justify-center w-full px-3 py-3 text-sm font-semibold text-white bg-black group hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     {isSignUp ? 'Sign Up' : 'Sign In'}
                 </button>

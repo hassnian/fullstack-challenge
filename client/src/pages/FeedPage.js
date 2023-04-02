@@ -14,7 +14,6 @@ const FeedPage = (props) => {
         return privateAxios.get('/user/feed?page=' + page)
     }, {
         onSuccess: (data) => {
-            console.log(data)
         }
     })
 

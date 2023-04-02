@@ -68,8 +68,6 @@ class NewYorkTimesDatasource implements ArticleDatasource
                 return $this->getFormattedArticleDatasourceData($article);
             });
 
-            dd($formattedArticles->toArray());
-
             return $formattedArticles->toArray();
         } catch (\Exception $e) {
             dd($e->getMessage());
