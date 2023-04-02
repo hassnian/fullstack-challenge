@@ -24,9 +24,13 @@ class NewYorkTimesDatasource implements ArticleDatasource
     }
 
     private function getFormattedArticleDatasourceData($article): ArticleDatasourceData {
-        $categories = collect($article['des_facet'] ?? [])->map(function ($category){
-            return new ArticleCategoryData($category, $category);
-        })->toArray();
+        $category = $article['section_name'] ?? null;
+
+        $categories = [];
+
+        if ($category !== null) {
+            $categories[] = new ArticleCategoryData($category, $category);
+        }
 
         $persons = $article['byline']['person'] ?? [];
 
@@ -38,9 +42,8 @@ class NewYorkTimesDatasource implements ArticleDatasource
         $firstMultimedia = $multimedia[0] ?? [];
         $imageUrl = $firstMultimedia['url'] ?? '';
 
-
-        $source = $article['source'];
-        $title = $article['abstract'];
+        $source = $article['source'] ?? 'New York Times';
+        $title = $article['abstract'] ?? $article['headline']['main'];
         $sourceUrl = $article['web_url'];
         $urlToImage =  $imageUrl === '' ? null : 'https://static01.nyt.com/' . $imageUrl;
         $publishedAt = new Carbon($article['pub_date']);
@@ -52,42 +55,26 @@ class NewYorkTimesDatasource implements ArticleDatasource
 
     public function getArticles($query = ''): array
     {
+        $pages = 10;
+
         try {
-
-            $sections = $this->api->getSections();
-
-            $sections = collect($sections)->map(function ($section){
-                return $section['section'];
-            })->toArray();
-
             $articles = [];
 
-            foreach ($sections as $category) {
-                // todo this will hit the api limit add it into a queue and process it
-                try {
-                 $articles = array_merge($articles, $this->getArticlesByCategory($category, $query));
-                } catch (\Exception $e) {
-
-                }
+            for ($i = 0; $i < $pages; $i++) {
+                $articles = array_merge($articles, $this->api->getArticles($query, $i));
             }
 
-            return $articles;
+            $formattedArticles = collect($articles)->map(function ($article){
+                return $this->getFormattedArticleDatasourceData($article);
+            });
+
+            dd($formattedArticles->toArray());
+
+            return $formattedArticles->toArray();
         } catch (\Exception $e) {
             dd($e->getMessage());
             return [];
         }
 
     }
-
-    private function getArticlesByCategory(mixed $category, mixed $query)
-    {
-        $articles = $this->api->getArticles($query, 1 , 50, $category);
-
-        $formattedArticles = collect($articles)->map(function ($article){
-            return $this->getFormattedArticleDatasourceData($article);
-        });
-
-        return $formattedArticles->toArray();
-    }
-
 }

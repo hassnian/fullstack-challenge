@@ -14,13 +14,12 @@ class NewYorkTimesApi
     /**
      * @throws \Exception
      */
-    public function getArticles($query = '', $page = 1, $pageSize = 50, $section = 'all-sections') {
+    public function getArticles($query = '', $page = 1) {
         try {
             $options = [
                 'query' => [
                     'q' => $query,
                     'page' => $page,
-                    'fq' => 'section_name:("' . $section . '")',
                 ]
             ];
 
@@ -30,26 +29,10 @@ class NewYorkTimesApi
 
             return $response['response']['docs'] ?? [];
         } catch (\Exception $e) {
+            dd($e->getMessage());
             throw new \Exception($e->getMessage());
         }
     }
-
-
-    public function getSections($query = '', $page = 1, $pageSize = 50)
-    {
-        $options = [
-            'query' => [
-                'q' => $query,
-            ]
-        ];
-
-        $response = $this->client->get('/svc/news/v3/content/section-list.json', $this->getOptionsWithDefaultConfig($options));
-
-        $response = json_decode($response->getBody()->getContents(), true);
-
-        return $response['results'] ?? [];
-    }
-
 
     private function getOptionsWithDefaultConfig(array $options): array
     {
