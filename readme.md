@@ -33,7 +33,11 @@ You will need to have docker installed on your machine.
     ```sh
     docker-compose up --build
     ```
-6. Run the following command to setup the application:
+6. Install composer dependencies
+    ```sh
+    docker-compose run composer install
+    ```
+7. Run the following command to setup the application:
    1. Generate JWT Secret key
       ```sh
       docker-compose run artisan jwt:secret
@@ -54,7 +58,7 @@ You will need to have docker installed on your machine.
         ```sh
         docker-compose run artisan app:feed-news-data-source
         ```
-7. The front end should be available at the following URL in your browser:
+8. The front end should be available at the following URL in your browser:
     ```sh
     http://localhost:3000/
     ```
