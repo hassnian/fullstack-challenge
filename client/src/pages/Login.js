@@ -11,12 +11,11 @@ const Login = () => {
 
     let navigate = useNavigate();
 
-    const redirectPath = useParams().redirect || '/'
 
     const loginMutation = useMutation({
         mutationFn: signin,
         onSuccess: () => {
-            navigate(redirectPath)
+            navigate('/')
         },
         onError: (error) => {
             console.log(error)

@@ -6,11 +6,7 @@ const Navbar = (props) => {
     const { isSignedIn, signout } = useAuth()
 
     const handleSignout = () => {
-        console.log('signout', signout())
-    }
-
-    const getUrlWithRedirect = (url) => {
-        return `${url}?redirect=${window.location.pathname}`
+        signout()
     }
 
     return (
@@ -26,7 +22,7 @@ const Navbar = (props) => {
                 !isSignedIn ? (
                     <div className="flex space-x-2">
                         <div>
-                            <Link to={getUrlWithRedirect('/login')} className="px-5 py-3 text-white bg-black">Login</Link>
+                            <Link to={'/login'} className="px-5 py-3 text-white bg-black">Login</Link>
                         </div>
                         <div>
                             <Link to="/register" className="px-5 py-3 border border-black">Register</Link>
