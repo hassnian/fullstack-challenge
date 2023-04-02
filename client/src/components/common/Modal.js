@@ -23,7 +23,7 @@ function Modal({ trigger, children, closeText = 'Close', onClose }) {
                             <div >{children}</div>
 
 
-                            <div className="flex justify-end p-4">
+                            <div className="flex justify-end py-4">
                                 <Button
                                     onClick={() => {
                                         setIsOpen(false);

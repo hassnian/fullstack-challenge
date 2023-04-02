@@ -4,8 +4,8 @@ import ArticleCard from "./ArticleCard";
 
 const ArticesHero = ({ articles }) => {
 
-    const mainArticle = useMemo(() => articles[0])
-    const otherArticles = useMemo(() => articles.slice(1))
+    const articleWithImage = useMemo(() => articles.find((article) => article.image_url), [articles])
+    const otherArticles = useMemo(() => articles.filter((article) => article.id !== articleWithImage?.id), [articles, articleWithImage])
 
 
     if (!articles) {
@@ -16,14 +16,14 @@ const ArticesHero = ({ articles }) => {
         <ul>
             <div className="grid grid-cols-1 lg:grid-cols-10 lg:gap-3 ">
                 <div className="col-span-4 lg:border-r">
-                    {mainArticle && (
+                    {articleWithImage && (
                         <div className="sticky top-0">
-                            <ArticleCard article={mainArticle} withImage withContent />
+                            <ArticleCard article={articleWithImage} withImage />
                         </div>
                     )}
                 </div>
                 <div className="col-span-6">
-                    <div className="grid grid-cols-2 gap-3 ">
+                    <div className="grid grid-cols-1 md:grid-cols-2 mid:gap-3 ">
                         {otherArticles.map((article) => (
                             <div className="col-span-1" key={article.id}>
                                 <ArticleCard article={article} />

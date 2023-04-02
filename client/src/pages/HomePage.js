@@ -112,7 +112,7 @@ function HomePage() {
 
             {
                 isLoading && (
-                    <div className="flex items-center w-full p-4">
+                    <div className="flex justify-center w-full p-4">
                         <Spinner />
                     </div>)
             }
