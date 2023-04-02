@@ -41,11 +41,6 @@ return [
         'url' => 'https://content.guardianapis.com'
     ],
 
-    'ny_times_api' => [
-        'key' => env('NY_TIMES_API_KEY'),
-        'url' => 'https://api.nytimes.com/svc/search/v2'
-    ],
-
     'new_york_times' => [
         'key' => env('NY_TIMES_API_KEY'),
         'url' => 'https://api.nytimes.com/'
