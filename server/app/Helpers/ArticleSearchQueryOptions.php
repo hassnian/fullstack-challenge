@@ -7,7 +7,7 @@ class ArticleSearchQueryOptions
 
     public function __construct(
         public int $page = 1,
-        public int $limit = 10,
+        public int $pageSize = 10,
         public ?string $query = '',
         public ?array $publishedAt = [],
         public ?array $categories = [],

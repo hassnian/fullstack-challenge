@@ -57,10 +57,12 @@ class UserPreferenceController extends Controller
         $categories = $user->categories()->get()->pluck('id')->toArray();
         $authors = $user->authors()->get()->pluck('id')->toArray();
         $datasources = $user->datasources()->get()->pluck('datasource_id')->toArray();
+        $page = request('page') ?? 1;
+        $perPage = request('per_page') ?? 10;
 
         $articleSearchQueryOptions = new ArticleSearchQueryOptions(
-            1,
-            10,
+            $page,
+            $perPage,
             null,
             null,
             $categories,

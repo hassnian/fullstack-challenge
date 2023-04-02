@@ -18,6 +18,8 @@ class ArticleController extends Controller
         $datasources = collect(explode(',', request('datasources')))->map(fn ($datasource) => $datasource)->filter(fn ($datasource) => $datasource !== '');
         $publishedAt = collect(explode(':', request('published_at')))->filter(fn ($publishedAt) => $publishedAt !== '')->map(fn ($publishedAt) => Carbon::parse($publishedAt));
         $authors = collect(explode(',', request('authors')))->map(fn ($author) => $author)->filter(fn ($author) => $author !== '');
+        $page = request('page') ?? 1;
+        $perPage = request('per_page') ?? 10;
 
         //        $request->validate([
 //            'q' => 'required|string',
@@ -26,7 +28,7 @@ class ArticleController extends Controller
 //        ]);
 
 
-        $articleSearchQueryOptions = new ArticleSearchQueryOptions(1, 10, $query,
+        $articleSearchQueryOptions = new ArticleSearchQueryOptions($page, $perPage, $query,
             $publishedAt->toArray(),
             $categories->toArray(),
             $datasources->toArray(),

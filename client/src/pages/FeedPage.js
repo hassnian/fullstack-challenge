@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import DefaultLayout from "../components/common/DefaultLayout";
 import useAxiosPrivate from "../hooks/use-axios-private";
 import ArticlesHero from "../components/Articles/ArticlesHero";
@@ -8,8 +8,10 @@ import Spinner from "../components/common/Spinner";
 const FeedPage = (props) => {
     const privateAxios = useAxiosPrivate()
 
-    const { isLoading, data } = useQuery(['feed'], () => {
-        return privateAxios.get('/user/feed')
+    const [page, setPage] = useState(1)
+
+    const { isLoading, data } = useQuery(['feed', page], () => {
+        return privateAxios.get('/user/feed?page=' + page)
     }, {
         onSuccess: (data) => {
             console.log(data)
@@ -35,6 +37,7 @@ const FeedPage = (props) => {
                     (
                         <ArticlesHero
                             articles={articles}
+                            onLoadMore={() => setPage((prev) => prev + 1)}
                         />
                     )
             }

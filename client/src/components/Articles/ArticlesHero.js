@@ -1,8 +1,9 @@
 import { useMemo } from "react";
+import Button from "../common/Button";
 import ArticleCard from "./ArticleCard";
 
 
-const ArticesHero = ({ articles }) => {
+const ArticesHero = ({ articles, onLoadMore }) => {
 
     const articleWithImage = useMemo(() => articles.find((article) => article.image_url), [articles])
     const otherArticles = useMemo(() => articles.filter((article) => article.id !== articleWithImage?.id), [articles, articleWithImage])
@@ -30,11 +31,27 @@ const ArticesHero = ({ articles }) => {
                             </div>
                         ))}
                     </div>
-
                 </div>
+
             </div>
 
-        </ul>
+
+
+
+            <div className="flex justify-center py-10">
+                {articles.length > 0 ? (
+                    <button
+                        className="px-4 py-3 text-sm font-bold text-black bg-gray-200 hover:text-white hover:bg-gray-400"
+                        onClick={onLoadMore}
+                    >
+                        Load next page
+                    </button>
+                )
+                    : (<div className="text-center">No more articles</div>)
+                }
+            </div>
+
+        </ul >
     );
 }
 

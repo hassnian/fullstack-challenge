@@ -24,18 +24,20 @@ function HomePage() {
         publishedAt: {}
     }
 
+    const [page, setPage] = useState(1)
     const [search, setSearch] = useState('')
     const debouncedSearch = useDebounce(search, 500);
     const [filters, setFilters] = useState(initialFilterState)
 
 
-    const { isLoading, data: response, isSuccess, refetch } = useQuery(['articles', debouncedSearch, JSON.stringify(filters)],
+    const { isLoading, data: response, isSuccess, refetch } = useQuery(['articles', debouncedSearch, page, JSON.stringify(filters)],
         () => {
 
             const { categories, authors, datasources } = filters
 
             const searchParams = {
                 q: debouncedSearch,
+                page: page
             }
 
             if (categories.length > 0) {
@@ -71,7 +73,7 @@ function HomePage() {
 
     const articles = useMemo(() => {
         if (!isSuccess) return []
-        return response.data.data || []
+        return response?.data?.data || []
     }, [isSuccess, response])
 
     const hasAnyFilters = useMemo(() => {
@@ -96,6 +98,10 @@ function HomePage() {
         }
         )
     }
+
+    useEffect(() => {
+        setPage(1)
+    }, [debouncedSearch, filters])
 
     return (
 
@@ -136,16 +142,19 @@ function HomePage() {
             </div>
 
             {
-                isLoading && (
+                isLoading ? (
                     <div className="flex justify-center w-full p-4">
                         <Spinner />
-                    </div>)
+                    </div>) : (
+                    <div>
+                        <ArticlesHero
+                            articles={articles}
+                            onLoadMore={() => setPage((prev) => prev + 1)}
+                        />
+                    </div>
+                )
             }
 
-
-            <ArticlesHero
-                articles={articles}
-            />
 
         </DefaultLayout>
     );
