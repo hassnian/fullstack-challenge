@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-Need to have docker installed on your machine.
+You will need to have docker installed on your machine.
 
 ### Installation
 
