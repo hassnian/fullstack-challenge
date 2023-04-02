@@ -1,5 +1,5 @@
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import useAxiosPrivate from "../../hooks/use-axios-private";
 import FromToDatePicker from "../common/FromToDateDatePicker";
 
@@ -10,6 +10,8 @@ const RemoteInput = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [options, setOptions] = useState([]);
     const [selected, setSelected] = useState([]);
+    const ref = useRef(null);
+
 
     const labelKey = props.labelKey || 'name';
     const minLength = props.minLength || 1
@@ -66,6 +68,7 @@ const RemoteInput = (props) => {
                                 setSelected((prev) => {
                                     return getUnique([...prev, result])
                                 })
+                                ref.current?.blur()
                             }}
                         >
                             <div className="px-2 font-semibold"
@@ -85,6 +88,7 @@ const RemoteInput = (props) => {
         <div>
             <AsyncTypeahead
                 id={id}
+                ref={ref}
                 filterBy={filterBy}
                 isLoading={isLoading}
                 labelKey={labelKey}

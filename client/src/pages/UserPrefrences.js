@@ -98,7 +98,6 @@ const UserPrefrences = () => {
     }
 
 
-    if (isLoading) { return <Spinner /> }
 
     return (
         <DefaultLayout>
@@ -113,10 +112,18 @@ const UserPrefrences = () => {
 
 
             <div className="pt-4">
-                <UserPrefrencesForm
-                    preselected={preselected}
-                    onSuccess={handleSuccess}
-                />
+                {
+                    isLoading ? (
+                        <div className="flex items-center w-full p-4">
+                            <Spinner />
+                        </div>
+                    ) : (
+                        <UserPrefrencesForm
+                            preselected={preselected}
+                            onSuccess={handleSuccess}
+                        />
+                    )
+                }
             </div>
 
 
