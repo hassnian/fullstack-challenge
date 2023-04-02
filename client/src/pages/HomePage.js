@@ -5,6 +5,7 @@ import ArticlesHero from "../components/Articles/ArticlesHero";
 import Spinner from "../components/common/Spinner";
 import DefaultLayout from "../components/common/DefaultLayout";
 import ArticleFilterModal from "../components/Articles/ArticleFilterModal";
+import useDebounce from "../hooks/use-debounce";
 
 const getFormattedDate = (date) => {
     const year = date.getFullYear()
@@ -16,22 +17,25 @@ const getFormattedDate = (date) => {
 
 function HomePage() {
 
-    const [search, setSearch] = useState('')
-    const [filters, setFilters] = useState({
+    const initialFilterState = {
         categories: [],
         authors: [],
         datasources: [],
         publishedAt: {}
-    })
+    }
+
+    const [search, setSearch] = useState('')
+    const debouncedSearch = useDebounce(search, 500);
+    const [filters, setFilters] = useState(initialFilterState)
 
 
-    const { isLoading, data: response, isSuccess, refetch } = useQuery(['articles', search, JSON.stringify(filters)],
+    const { isLoading, data: response, isSuccess, refetch } = useQuery(['articles', debouncedSearch, JSON.stringify(filters)],
         () => {
 
             const { categories, authors, datasources } = filters
 
             const searchParams = {
-                q: search,
+                q: debouncedSearch,
             }
 
             if (categories.length > 0) {
@@ -79,6 +83,9 @@ function HomePage() {
         return 'Latest Articles'
     }, [search, filters])
 
+    const clearFilters = () => {
+        setFilters(initialFilterState)
+    }
 
     const handleFilterChange = (filters) => {
         setFilters((prev) => {
@@ -89,10 +96,6 @@ function HomePage() {
         }
         )
     }
-
-    useEffect(() => {
-        refetch({ q: search })
-    }, [search])
 
     return (
 
@@ -109,12 +112,7 @@ function HomePage() {
                     {hasAnyFilters && (
                         <button
                             className="px-4 py-3 text-sm font-bold text-white bg-red-500 "
-                            onClick={() => setFilters({
-                                categories: [],
-                                authors: [],
-                                datasources: [],
-                                publishedAt: {}
-                            })}
+                            onClick={clearFilters}
                         >
                             Clear Filters
                         </button>

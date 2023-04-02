@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import AuthForm from "../components/Auth/AuthForm";
 import { useMemo } from "react";
 import { useAuth } from "../hooks/use-auth";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ErrorMessage from "../components/common/ErrorMessage";
 
 const Login = () => {
