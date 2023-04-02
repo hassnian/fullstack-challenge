@@ -10,6 +10,7 @@ use App\Interfaces\ArticleDatasource;
 use App\Models\Article;
 use App\Models\Author;
 use App\Models\Category;
+use Illuminate\Support\Facades\Log;
 
 class ArticleDatasourceService
 {
@@ -46,11 +47,12 @@ class ArticleDatasourceService
     {
         collect($datasourceArticles)->each(function (ArticleDatasourceData $articleDatasourceData){
             /** @var Article $article */
+
             $article = Article::create([
                 'datasource' => $articleDatasourceData->datasourceType,
                 'title' => $articleDatasourceData->title,
                 'source_url' => $articleDatasourceData->sourceUrl,
-                'url_to_image' => $articleDatasourceData->urlToImage,
+                'image_url' => $articleDatasourceData->urlToImage,
                 'published_at' => $articleDatasourceData->publishedAt,
                 'content' => $articleDatasourceData->content,
                 'source' => $articleDatasourceData->sourceName,
@@ -93,6 +95,8 @@ class ArticleDatasourceService
             $article->forceReIndex();
 
             $article->save();
+
+            Log::info('Article saved: '. $article->title);
         });
     }
 
@@ -103,9 +107,9 @@ class ArticleDatasourceService
             return $datasource->getArticles();
         })->flatten(1)->toArray();
 
-//        $uniqueArticles = $this->getUniqueArticles($articles);
+        $uniqueArticles = $this->getUniqueArticles($articles);
 
-        $this->saveArticles($articles);
+        $this->saveArticles($uniqueArticles);
     }
 
 }

@@ -18,7 +18,7 @@ class NewsApi
     /**
      * @throws Exception
      */
-    public function getTopHeadlines($query = '') {
+    public function getTopHeadlines($query = '', string $category = 'general') {
         try {
 
             $response = $this->client->get('/v2/top-headlines', [
@@ -27,6 +27,7 @@ class NewsApi
                     'sortBy' => 'publishedAt',
                     'country' => 'us',
                     'pageSize' => 100,
+                    'category' => $category,
                 ]
             ]);
 

@@ -31,5 +31,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'The New York Times',
             'datasource_id' => ArticleDatasourceType::THE_GUARDIAN,
         ]);
+
+        Datasource::create([
+            'name' => 'News API',
+            'datasource_id' => ArticleDatasourceType::NEWS_API,
+        ]);
     }
 }

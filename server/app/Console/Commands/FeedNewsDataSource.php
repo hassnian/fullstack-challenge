@@ -30,7 +30,7 @@ class FeedNewsDataSource extends Command
     public function handle(): void
     {
         $articleDataSource = new ArticleDatasourceService([
-//            App::make(NewsApiDatasource::class),
+            App::make(NewsApiDatasource::class),
             App::make(TheGuardianDatasource::class),
         ]);
 
