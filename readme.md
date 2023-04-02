@@ -34,19 +34,23 @@ Need to have docker installed on your machine.
     docker-compose up --build
     ```
 6. Run the following command to setup the application:
-   1. Migrate the db
+   1. Generate JWT Secret key
+      ```sh
+      docker-compose run artisan jwt:secret
+      ```
+   2. Migrate the db
        ```sh
         docker-compose run artisan migrate
        ```
-   2. Seed the db
+   3. Seed the db
         ```sh
          docker-compose run artisan db:seed
         ```
-   3. Index models in elasticsearch
+   4. Index models in elasticsearch
         ```sh
          docker-compose run artisan app:index-models
         ```
-   4. To manually run the data sources run
+   5. You will need to manually run the data sources run at least once to populate the database
         ```sh
         docker-compose run artisan app:feed-news-data-source
         ```
