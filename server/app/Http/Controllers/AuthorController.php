@@ -9,10 +9,8 @@ class AuthorController extends Controller
 {
     public function index(Request $request)
     {
-        $authors = Author::where('name', 'like', '%' . $request->input('q') . '%')->get();
+        $authors = Author::where('name', 'like', '%' . $request->input('q') . '%')->paginate(10);
 
-        return response()->json([
-            'data' => $authors,
-        ]);
+        return response()->json($authors);
     }
 }

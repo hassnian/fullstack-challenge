@@ -21,7 +21,7 @@ class NewsApi
     public function getTopHeadlines($query = '', string $category = 'general') {
         try {
 
-            $response = $this->client->get('/v2/top-headlines', [
+            $options =  [
                 'query' => [
                     'q' => $query,
                     'sortBy' => 'publishedAt',
@@ -29,12 +29,9 @@ class NewsApi
                     'pageSize' => 100,
                     'category' => $category,
                 ]
-            ]);
+            ];
 
-
-            if ($response->getStatusCode() !== 200) {
-                throw new Exception('News API request failed');
-            }
+            $response = $this->client->get('/v2/top-headlines', $this->getOptionsWithDefaultConfig($options));
 
             $response = json_decode($response->getBody()->getContents(), true);
 
@@ -43,5 +40,10 @@ class NewsApi
             throw new Exception($e->getMessage());
         }
 
+    }
+
+    private function getOptionsWithDefaultConfig(array $options)
+    {
+        return array_merge_recursive($options, $this->client->getConfig('defaults'));
     }
 }

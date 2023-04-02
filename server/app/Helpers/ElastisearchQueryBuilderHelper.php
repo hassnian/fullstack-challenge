@@ -18,7 +18,8 @@ class ElastisearchQueryBuilderHelper
 
     private static function getDateFormatted(\DateTime $date): string
     {
-        return $date->format("Y-m-d");
+        // yyyy-MM-dd HH:mm:ss
+        return $date->format('Y-m-d H:i:s');
     }
 
     public static function getRangeQuery(string $field, \DateTime $gte, \DateTime $lte): array

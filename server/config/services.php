@@ -46,6 +46,11 @@ return [
         'url' => 'https://api.nytimes.com/svc/search/v2'
     ],
 
+    'new_york_times' => [
+        'key' => env('NY_TIMES_API_KEY'),
+        'url' => 'https://api.nytimes.com/'
+    ],
+
     'search' => [
         'driver' => env('SEARCH_DRIVER', 'elasticsearch'),
 

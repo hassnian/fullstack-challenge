@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Services\ArticleDatasourceService;
 use App\Services\DataSources\NewsApiDatasource;
+use App\Services\DataSources\NewYorkTimesDatasource;
 use App\Services\DataSources\TheGuardianDatasource;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -32,6 +33,7 @@ class FeedNewsDataSource extends Command
         $articleDataSource = new ArticleDatasourceService([
             App::make(NewsApiDatasource::class),
             App::make(TheGuardianDatasource::class),
+//            App::make(NewYorkTimesDatasource::class)
         ]);
 
 

@@ -27,16 +27,9 @@ class NewsApiDatasource implements ArticleDatasource
         'technology'
     ];
 
-    public function __construct()
+    public function __construct(NewsApi $newsApi)
     {
-        $this->api = new NewsApi(
-            new Client([
-                'base_uri' => config('services.news_api.url'),
-                'headers' => [
-                    'X-Api-Key' => config('services.news_api.key'),
-                ],
-            ])
-        );
+        $this->api = $newsApi;
     }
 
     public function getArticles($query = ''): array

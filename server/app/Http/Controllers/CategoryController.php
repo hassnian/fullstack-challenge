@@ -9,10 +9,8 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::where('name', 'like', '%' . $request->input('q') . '%')->get();
+        $categories = Category::where('name', 'like', '%' . $request->input('q') . '%')->paginate(10);
 
-        return response()->json([
-            'data' => $categories,
-        ]);
+        return response()->json($categories);
     }
 }

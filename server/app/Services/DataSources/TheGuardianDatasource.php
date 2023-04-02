@@ -7,28 +7,17 @@ use App\Helpers\ArticleCategoryData;
 use App\Helpers\ArticleDatasourceData;
 use App\Helpers\Enums\ArticleDatasourceType;
 use App\Interfaces\ArticleDatasource;
-use App\Models\Article;
 use App\Services\Api\TheGuardianApi;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 
 class TheGuardianDatasource implements ArticleDatasource
 {
 
     private TheGuardianApi $api;
 
-    public function __construct()
+    public function __construct(TheGuardianApi $api)
     {
-        $this->api = new TheGuardianApi(
-            new Client([
-                'base_uri' => config('services.the_guardian.url'),
-                'defaults' => [
-                    'query' => [
-                        'api-key' => config('services.the_guardian.key'),
-                    ]
-                ]
-            ])
-        );
+        $this->api = $api;
     }
 
     private function getFormattedArticleDatasourceData($article): ArticleDatasourceData {

@@ -38,9 +38,9 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
         $body = collect();
 
         // pagination
-//        $from = ($page - 1) * $pageSize;
-//        $body->put('from', $from);
-//        $body->put('size', $pageSize);
+        $from = ($page - 1) * $pageSize;
+        $body->put('from', $from);
+        $body->put('size', $pageSize);
 
         // sort
         $body->put('sort', [

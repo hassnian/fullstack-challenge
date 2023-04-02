@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('datasource');
             $table->string('source');
-            $table->string('content')->nullable();
+            $table->longText('content')->nullable();
             $table->longText('image_url')->nullable();
             $table->string('source_url');
             $table->date('published_at');

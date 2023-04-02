@@ -2,39 +2,57 @@
 
 namespace App\Services\Api;
 
-use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class NewYorkTimesApi
 {
-    private mixed $api_key;
-    private mixed $api_url;
-
-    public function __construct()
+    public function __construct(Client $client)
     {
-        $this->api_url = config('services.ny_times_api.url');
-        $this->api_key = config('services.ny_times_api.key');
+        $this->client = $client;
     }
 
     /**
      * @throws \Exception
      */
-    public function getArticles($query = '') {
+    public function getArticles($query = '', $page = 1, $pageSize = 50, $section = 'all-sections') {
         try {
-            $response = Http::get($this->api_url.'/articlesearch.json', [
-                'api-key' => $this->api_key,
-                'q' => $query,
-            ]);
+            $options = [
+                'query' => [
+                    'q' => $query,
+                    'page' => $page,
+                    'fq' => 'section_name:("' . $section . '")',
+                ]
+            ];
 
-            if ($response['status'] !== 'ok') {
-                throw new \Exception('News API request failed');
-            }
+            $response = $this->client->get('/svc/search/v2/articlesearch.json', $this->getOptionsWithDefaultConfig($options));
 
-            $response = $response->json();
+            $response = json_decode($response->getBody()->getContents(), true);
 
-            return $response['articles'] ?? [];
+            return $response['response']['docs'] ?? [];
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
+    }
 
+
+    public function getSections($query = '', $page = 1, $pageSize = 50)
+    {
+        $options = [
+            'query' => [
+                'q' => $query,
+            ]
+        ];
+
+        $response = $this->client->get('/svc/news/v3/content/section-list.json', $this->getOptionsWithDefaultConfig($options));
+
+        $response = json_decode($response->getBody()->getContents(), true);
+
+        return $response['results'] ?? [];
+    }
+
+
+    private function getOptionsWithDefaultConfig(array $options): array
+    {
+        return array_merge_recursive($options, $this->client->getConfig('defaults'));
     }
 }
