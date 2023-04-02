@@ -30,6 +30,7 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
         $publishedAt = $articleSearchQueryOptions->publishedAt ?? [];
         $datasources = $articleSearchQueryOptions->datasources ?? [];
         $categories = $articleSearchQueryOptions->categories ?? [];
+        $authors = $articleSearchQueryOptions->authors ?? [];
         $allFiltersRequired = $articleSearchQueryOptions->allFiltersRequired ?? false;
         $pageSize = $articleSearchQueryOptions->pageSize ?? 10;
         $page = $articleSearchQueryOptions->page ?? 1;
@@ -68,6 +69,16 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
                 ElastisearchQueryBuilderHelper::getBooleanQuery(
                     ElastisearchQueryBuilderHelper::getMustQuery([
                            ElastisearchQueryBuilderHelper::getTermsQuery('categories.id', $categories)
+                    ])
+                )
+            ));
+        }
+
+        if ($this->hasAuthors($authors)) {
+            $mustOrShouldQuery->push(ElastisearchQueryBuilderHelper::getNestedPathQuery('authors',
+                ElastisearchQueryBuilderHelper::getBooleanQuery(
+                    ElastisearchQueryBuilderHelper::getMustQuery([
+                        ElastisearchQueryBuilderHelper::getTermsQuery('authors.id', $authors)
                     ])
                 )
             ));
@@ -130,5 +141,10 @@ class ElasticsearchArticleRepository implements ArticleSearchRepository
     private function hasCategories(array $categories): bool
     {
         return count($categories) > 0;
+    }
+
+    private function hasAuthors(array $authors)
+    {
+        return count($authors) > 0;
     }
 }
