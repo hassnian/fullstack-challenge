@@ -1,6 +1,7 @@
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { useEffect, useMemo, useState } from "react";
 import useAxiosPrivate from "../../hooks/use-axios-private";
+import FromToDatePicker from "../common/FromToDateDatePicker";
 
 const RemoteInput = (props) => {
 
@@ -122,8 +123,14 @@ const ArticleFilters = (props) => {
     const defaultFilters = {
         categories: [],
         authors: [],
-        datasources: []
+        datasources: [],
+        publishedAt: {
+            from: null,
+            to: null
+        }
     }
+
+    const withPublishedAt = props.withPostedAt || false
 
     const [filters, setFilters] = useState(defaultFilters)
     const preselected = useMemo(() => props.preselected || defaultFilters, [props.preselected])
@@ -146,9 +153,18 @@ const ArticleFilters = (props) => {
             .then((json) => { return json.data.data })
     }
 
-    const handlePreferencesChange = (value, key) => {
+    const handleFilterChange = (value, key) => {
         setFilters((prev) => {
             return { ...prev, [key]: value }
+        })
+    }
+
+    const handleDatePickerChange = (event) => {
+        const value = event.target.valueAsDate
+        const name = event.target.name
+
+        setFilters((prev) => {
+            return { ...prev, publishedAt: { ...prev.publishedAt, [name]: value } }
         })
     }
 
@@ -167,7 +183,7 @@ const ArticleFilters = (props) => {
                     value={preselected.categories}
                     fetchData={fetchCategories}
                     placeholder="Search by name"
-                    onChange={(value) => handlePreferencesChange(value, 'categories')}
+                    onChange={(value) => handleFilterChange(value, 'categories')}
                 />
             </div>
 
@@ -178,7 +194,7 @@ const ArticleFilters = (props) => {
                     value={preselected.authors}
                     fetchData={fetchAuthors}
                     placeholder="Search by name"
-                    onChange={(value) => handlePreferencesChange(value, 'authors')}
+                    onChange={(value) => handleFilterChange(value, 'authors')}
                 />
             </div>
 
@@ -190,9 +206,19 @@ const ArticleFilters = (props) => {
                     value={preselected.datasources}
                     fetchData={fetchDatasources}
                     placeholder="Search by name"
-                    onChange={(value) => handlePreferencesChange(value, 'datasources')}
+                    onChange={(value) => handleFilterChange(value, 'datasources')}
                 />
             </div>
+
+            {withPublishedAt && (
+                <div className="space-y-2">
+                    <p className="text-xl font-bold ">Posted At</p>
+
+                    <FromToDatePicker
+                        onChange={handleDatePickerChange}
+                    />
+                </div>
+            )}
 
         </div>
 

@@ -3,10 +3,16 @@ import { useState, useMemo, useEffect } from "react";
 import { getArticles } from "../services/api";
 import ArticlesHero from "../components/Articles/ArticlesHero";
 import Spinner from "../components/common/Spinner";
-import Filters from "../components/common/Filters";
-import Navbar from "../components/common/Navbar";
 import DefaultLayout from "../components/common/DefaultLayout";
 import ArticleFilterModal from "../components/Articles/ArticleFilterModal";
+
+const getFormattedDate = (date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+
+    return `${year}-${month}-${day}`
+}
 
 function HomePage() {
 
@@ -15,8 +21,10 @@ function HomePage() {
         categories: [],
         authors: [],
         datasources: [],
-        postedAt: []
+        publishedAt: {}
     })
+
+
     const { isLoading, data: response, isSuccess, refetch } = useQuery(['articles', search, JSON.stringify(filters)],
         () => {
 
@@ -38,8 +46,12 @@ function HomePage() {
                 searchParams.datasources = datasources.map((item) => item.datasource_id).join(',')
             }
 
-            if (filters.postedAt.length > 0) {
-                searchParams.postedAt = filters.postedAt.map((item) => item.id).join(',')
+            if (filters.publishedAt.from) {
+                const { from, to } = filters.publishedAt
+
+                if (!to) searchParams.publishedAt = getFormattedDate(from)
+
+                searchParams.publishedAt = `${getFormattedDate(from)}:${getFormattedDate(to)}`
             }
 
             return getArticles(searchParams);

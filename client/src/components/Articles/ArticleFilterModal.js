@@ -22,6 +22,7 @@ const ArticleFilterModal = (props) => {
                 <div className="">
                     <ArticleFilters
                         onChange={handleChange}
+                        withPostedAt
                     />
                 </div>
             </div>

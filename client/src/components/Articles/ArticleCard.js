@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 
 const ArticleCard = ({ article, withImage = false }) => {
 
-    const formattedDate = new Date(article.published_at).toLocaleDateString('en-US', {
+    const formattedDate = new Date(article?.published_at).toLocaleDateString('en-US', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
