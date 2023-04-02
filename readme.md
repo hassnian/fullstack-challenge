@@ -16,7 +16,7 @@ You will need to have docker installed on your machine.
     3. The Guardian: https://open-platform.theguardian.com/access/
 2. Copy paste the /server/.env.example to /server/.env
     ```sh
-    cp /server/.env.example /server/.env
+    cp ./server/.env.example ./server/.env
     ```
 3. Update the /server/.env  with the API keys
     ```sh
@@ -27,7 +27,7 @@ You will need to have docker installed on your machine.
    
 4. Copy paste the /client/.env.example to /client/.env
     ```sh
-    cp /client/.env.example /client/.env
+    cp ./client/.env.example ./client/.env
     ```
 5. Run the following command to build the docker image:
     ```sh
