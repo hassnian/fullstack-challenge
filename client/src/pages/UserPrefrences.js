@@ -45,15 +45,16 @@ const UserPrefrencesForm = (props) => {
         })
     }
 
+    const handleFilterChange = (data) => {
+        setPreferences(data)
+    }
+
     return (
         <div>
 
             <ArticleFilters
                 preselected={preselectedPreferences}
-                onChange={() => {
-                    // TODO 
-                    console.log('change')
-                }}
+                onChange={handleFilterChange}
             />
 
             <div className="flex justify-end mt-10">

@@ -126,7 +126,7 @@ const ArticleFilters = (props) => {
     }
 
     const [filters, setFilters] = useState(defaultFilters)
-    const [preselectedPreferences, setPreselectedPreferences] = useState(defaultFilters)
+    const preselected = useMemo(() => props.preselected || defaultFilters, [props.preselected])
 
     const fetchCategories = (query) => {
         return axios.get('/categories', {
@@ -164,7 +164,7 @@ const ArticleFilters = (props) => {
                 <p className="text-xl font-bold ">Categories</p>
                 <RemoteInput
                     id="categories"
-                    value={preselectedPreferences.categories}
+                    value={preselected.categories}
                     fetchData={fetchCategories}
                     placeholder="Search by name"
                     onChange={(value) => handlePreferencesChange(value, 'categories')}
@@ -175,7 +175,7 @@ const ArticleFilters = (props) => {
                 <p className="text-xl font-bold ">Authors</p>
                 <RemoteInput
                     id="authors"
-                    value={preselectedPreferences.authors}
+                    value={preselected.authors}
                     fetchData={fetchAuthors}
                     placeholder="Search by name"
                     onChange={(value) => handlePreferencesChange(value, 'authors')}
@@ -187,7 +187,7 @@ const ArticleFilters = (props) => {
                 <p className="text-xl font-bold ">Datasources</p>
                 <RemoteInput
                     id="datasources"
-                    value={preselectedPreferences.datasources}
+                    value={preselected.datasources}
                     fetchData={fetchDatasources}
                     placeholder="Search by name"
                     onChange={(value) => handlePreferencesChange(value, 'datasources')}
