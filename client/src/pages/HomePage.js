@@ -71,8 +71,7 @@ function HomePage() {
     }, [isSuccess, response])
 
     const hasAnyFilters = useMemo(() => {
-        console.log(filters)
-        return Object.values(filters).length > 0
+        return filters.categories.length > 0 || filters.authors.length > 0 || filters.datasources.length > 0 || filters.publishedAt.from
     }, [filters])
 
     const title = useMemo(() => {
@@ -106,6 +105,22 @@ function HomePage() {
                 </div>
 
                 <div className="flex items-center space-x-2">
+
+                    {hasAnyFilters && (
+                        <button
+                            className="px-4 py-3 text-sm font-bold text-white bg-red-500 "
+                            onClick={() => setFilters({
+                                categories: [],
+                                authors: [],
+                                datasources: [],
+                                publishedAt: {}
+                            })}
+                        >
+                            Clear Filters
+                        </button>
+                    )
+                    }
+
                     <ArticleFilterModal
                         onChange={handleFilterChange}
                     />
