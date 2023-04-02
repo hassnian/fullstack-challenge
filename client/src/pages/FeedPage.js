@@ -8,7 +8,6 @@ import Spinner from "../components/common/Spinner";
 const FeedPage = (props) => {
     const privateAxios = useAxiosPrivate()
 
-
     const { isLoading, data } = useQuery(['feed'], () => {
         return privateAxios.get('/user/feed')
     }, {
