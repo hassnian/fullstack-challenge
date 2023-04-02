@@ -30,6 +30,10 @@ class IndexModels extends Command
 
         $client = app(Client::class);
 
+        if ($client->indices()->exists(['index' => Article::INDEX])) {
+            $client->indices()->delete(['index' => Article::INDEX]);
+        }
         $client->indices()->create(Article::getElasticSearchMappings());
+
     }
 }

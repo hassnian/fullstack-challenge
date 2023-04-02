@@ -26,6 +26,7 @@ class Article extends Model
     use HasFactory;
     use ElasticSearchSearchable;
 
+    const INDEX = 'articles';
     protected $fillable = [
         'url',
         'image_url',
@@ -77,7 +78,7 @@ class Article extends Model
     public static function getElasticSearchMappings()
     {
         return [
-            'index' => 'articles',
+            'index' => self::INDEX,
             'body' => [
                 'mappings' => [
                     'properties' => [
