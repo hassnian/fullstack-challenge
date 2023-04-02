@@ -93,7 +93,7 @@ const UserPrefrences = () => {
 
     const handleSuccess = () => {
         setShowSuccessMessage(true)
-        queryCache.invalidateQueries('userPreferences')
+        queryCache.invalidateQueries(['userPreferences'])
         refetch()
     }
 
